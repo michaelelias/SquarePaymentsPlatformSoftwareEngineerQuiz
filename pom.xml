@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.square.engineering.mielias</groupId>
+	<artifactId>question</artifactId>
+	<version>1</version>
+	<packaging>war</packaging>
+	<name>Square - Software Engineer - Payment Platform - Question</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jetty.version>6.1.26</jetty.version>
+		<jersey.version>1.11</jersey.version>
+		<log4j.version>1.2.15</log4j.version>
+		<httpclient.version>4.1.3</httpclient.version>
+		<junit.version>4.10</junit.version>
+		<servlet-api.version>2.5</servlet-api.version>
+		<commons-lang.version>2.6</commons-lang.version>
+		<junit.version>4.10</junit.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-grizzly2</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-json</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-servlet</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty</artifactId>
+			<version>${jetty.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty-util</artifactId>
+			<version>${jetty.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty-management</artifactId>
+			<version>${jetty.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${httpclient.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.1</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>${jetty.version}</version>
+				<configuration>
+					<systemProperties>
+						<systemProperty>
+							<name>http.nonProxyHosts</name>
+							<value>localhost|127.0.0.1</value>
+						</systemProperty>
+					</systemProperties>
+					<contextPath>/</contextPath>
+					<connectors>
+						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+							<host>0.0.0.0</host>
+							<port>8880</port>
+							<maxIdleTime>30000</maxIdleTime>
+						</connector>
+					</connectors>
+					<!-- <scanIntervalSeconds>8</scanIntervalSeconds> -->
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

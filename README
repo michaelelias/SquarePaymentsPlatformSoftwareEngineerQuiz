@@ -1,0 +1,7 @@
+Given the REST API defined below, write a Rack middleware, Java servlet, or equivalent proxy to log the moving average and variance of the response status codes grouped by their class (2xx, 4xx, etc).
+ 
+  - PUT /locations/:location_id
+  - GET /locations/:location_id
+  - DELETE /locations/:location_id
+ 
+Assume the service is only available over HTTPS and that the API returns standard HTTP status codes, i.e., 5xx for internal server errors, 4xx for client request errors, 2xx for success, and 3xx for redirection. Bonus points: implementing the API in question, and adding authentication to the API.
