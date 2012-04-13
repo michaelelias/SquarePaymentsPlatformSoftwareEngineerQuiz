@@ -26,22 +26,22 @@ public class CredentialsStore {
 			Properties properties = new Properties();
 			properties.load(is);
 			
-			String[] merchants = properties.getProperty("merchants").split(",");
-			for(String merchant : merchants){
-				loadMerchantDetails(merchant, properties);
+			String[] merchantIds = properties.getProperty("merchants").split(",");
+			for(String merchantId : merchantIds){
+				loadMerchantDetails(merchantId, properties);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	private void loadMerchantDetails(String merchant, Properties properties){
-		String name = properties.getProperty("merchant." + merchant + ".name");
-		String oauth = properties.getProperty("merchant." + merchant + ".oauth.token");
-		String username = properties.getProperty("merchant." + merchant + ".basic.username");
-		String password = properties.getProperty("merchant." + merchant + ".basic.password");
+	private void loadMerchantDetails(String merchantId, Properties properties){
+		String name = properties.getProperty("merchant." + merchantId + ".name");
+		String oauth = properties.getProperty("merchant." + merchantId + ".oauth.token");
+		String username = properties.getProperty("merchant." + merchantId + ".basic.username");
+		String password = properties.getProperty("merchant." + merchantId + ".basic.password");
 		
-		Credentials creds = new Credentials(name, oauth, username, password);
+		Credentials creds = new Credentials(merchantId, name, oauth, username, password);
 		credentials.add(creds);
 		LOG.info("Loaded " + creds.toString());
 	}

@@ -20,8 +20,8 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
-import com.square.engineering.APIException;
-import com.square.engineering.Location;
+import com.square.engineering.location.Location;
+import com.square.engineering.rest.APIException;
 
 public class RESTLocationApiClient {
 	
@@ -47,6 +47,7 @@ public class RESTLocationApiClient {
 	
 	public Location update(String locationId, Location location) throws APIException{
 		HttpPut put = new HttpPut(endpointUrl + locationId);
+		put.addHeader("Content-Type", "application/json");
 		try{
 		put.setEntity(new StringEntity(toJSON(location)));
 		} catch(Exception e){
@@ -81,7 +82,7 @@ public class RESTLocationApiClient {
 	private HttpResponse execute(HttpRequestBase request) throws APIException {
 		try {
 			logRequest(request);
-			authStrategy.applyCredentials(request);
+			authStrategy.applyCredentials(httpClient, request);
 			HttpResponse response = httpClient.execute(request);
 			logResponse(response);
 			if(isStatusOK(response)){

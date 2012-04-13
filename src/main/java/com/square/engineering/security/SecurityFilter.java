@@ -54,7 +54,7 @@ public class SecurityFilter implements Filter {
 	}
 
 	private boolean hasBasicCredentials(ServletRequest request) {
-		String header = ((HttpServletRequest) request).getHeader("Authentication");
+		String header = ((HttpServletRequest) request).getHeader("Authorization");
 		return header != null;
 	}
 
@@ -64,10 +64,13 @@ public class SecurityFilter implements Filter {
 
 	private String[] extractUsernamePassword(ServletRequest request) {
 		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-		String header = httpServletRequest.getHeader("Authentication");
-		Base64 base64 = new Base64();
-		String clearText = new String(base64.decode(header));
-		return header.split(":");
+		String header = httpServletRequest.getHeader("Authorization");
+		if(!header.startsWith("Basic")){
+			throw new RuntimeException("Authorization header is not formatted correctly");
+		}
+		String cipherText = header.split(" ")[1];
+		String clearText = new String(Base64.decodeBase64(cipherText));
+		return clearText.split(":");
 	}
 
 	@Override

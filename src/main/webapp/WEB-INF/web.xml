@@ -19,7 +19,7 @@
         <description>
             This filter captures usage statistics on the locations rest api.
         </description>
-        <filter-class>com.square.engineering.StatisticsFilter</filter-class>
+        <filter-class>com.square.engineering.statistics.StatisticsFilter</filter-class>
     </filter>
 
     <filter-mapping>

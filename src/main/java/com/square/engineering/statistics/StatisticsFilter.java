@@ -1,4 +1,4 @@
-package com.square.engineering;
+package com.square.engineering.statistics;
 
 import java.io.IOException;
 
@@ -36,8 +36,20 @@ public class StatisticsFilter implements Filter {
 				stats.statusCode = sc;
 			}
 
+			@Override
+			public void setStatus(int sc, String sm) {
+				// TODO Auto-generated method stub
+				super.setStatus(sc, sm);
+				stats.statusCode = sc;
+			}
+			
+			
+
 		});
-		
+		if(stats.method.equals("PUT")){
+			System.out.println("wtf");
+		}
+		LOG.info(stats.toString());
 	}
 
 	@Override
@@ -59,10 +71,12 @@ public class StatisticsFilter implements Filter {
 		public ApiCallStats(){
 			time = System.currentTimeMillis();
 		}
-		
-		public String toString(){
-			return "";
+
+		@Override
+		public String toString() {
+			return method + " " + statusCode;
 		}
+		
 	}
 
 }

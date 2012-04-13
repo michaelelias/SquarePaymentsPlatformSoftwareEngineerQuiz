@@ -37,7 +37,7 @@ public class AuthenticationContext {
 		exception = e;
 	}
 	
-	public static AuthenticationException getException() {
+	public AuthenticationException getException() {
 		return exception;
 	}
 

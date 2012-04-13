@@ -1,4 +1,4 @@
-package com.square.engineering;
+package com.square.engineering.rest;
 
 import java.lang.reflect.Type;
 

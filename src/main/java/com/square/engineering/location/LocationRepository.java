@@ -1,4 +1,4 @@
-package com.square.engineering;
+package com.square.engineering.location;
 
 import java.io.InputStream;
 import java.util.Collections;
@@ -54,20 +54,27 @@ public class LocationRepository {
 		LOG.info("Loaded from properties " + loc.toString());
 	}
 	
-	public Location get(String locationId){
+	public Location get(String locationId, String ownerId) {
 		Location location = map.get(locationId);
 		if(location == null){
-			// throw 
+			throw new LocationDoesNotExistException(locationId);
+		}
+		if(!location.getOwner().equals(ownerId)){
+			throw new PermissionException(locationId, ownerId);
 		}
 		return location;
 	}
 	
-	public void update(Location location){
+	public Location update(String locationId, Location updateLocation, String ownerId){
+		Location location = get(locationId, ownerId);
+		location.setName(updateLocation.getName());
 		map.put(location.getId(), location);
+		return location;
 	}
 	
-	public void delete(String locationId){
-		map.remove(locationId);
+	public void delete(String locationId, String ownerId){
+		Location location = get(locationId, ownerId);
+		map.remove(location.getId());
 	}
 	
 }

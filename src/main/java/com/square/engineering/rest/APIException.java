@@ -1,7 +1,9 @@
-package com.square.engineering;
+package com.square.engineering.rest;
 
 public class APIException extends Exception {
 
+	private static final long serialVersionUID = 1L;
+	
 	private int httpStatusCode;
 	
 

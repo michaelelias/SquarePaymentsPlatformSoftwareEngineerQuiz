@@ -1,12 +1,14 @@
-package com.square.engineering;
+package com.square.engineering.location;
 
 public class Location {
 
 	private String id;
 	private String name;
+	private String owner;
 
-	public Location(){}
-	
+	public Location() {
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -23,9 +25,17 @@ public class Location {
 		this.name = name;
 	}
 
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String ownerName) {
+		this.owner = ownerName;
+	}
+
 	@Override
 	public String toString() {
-		return "Location [id=" + id + ", name=" + name + "]";
+		return "Location [id=" + id + ", name=" + name + ", owner=" + owner + "]";
 	}
-	
+
 }

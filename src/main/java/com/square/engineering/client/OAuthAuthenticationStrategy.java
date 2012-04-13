@@ -2,6 +2,7 @@ package com.square.engineering.client;
 
 import java.net.URI;
 
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
 
 public class OAuthAuthenticationStrategy implements AuthenticationStrategy {
@@ -13,7 +14,7 @@ public class OAuthAuthenticationStrategy implements AuthenticationStrategy {
 	}
 
 	@Override
-	public void applyCredentials(HttpRequestBase request) {
+	public void applyCredentials(HttpClient client, HttpRequestBase request) {
 		String query = request.getURI().getQuery();
 		if(query == null){
 			URI uri = request.getURI();

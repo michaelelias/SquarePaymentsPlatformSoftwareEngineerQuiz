@@ -6,20 +6,17 @@ import junit.framework.Assert;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import com.square.engineering.APIException;
-import com.square.engineering.Location;
+import com.square.engineering.location.Location;
+import com.square.engineering.rest.APIException;
 
 public class RESTLocationApiBeanTestUnautomated {
 
 	private static final String SERVER_URL = "http://localhost:8880";
 
 	private static RESTLocationApiClient client;
-
-	private AuthenticationStrategy noAuthenticationStrategy = new NoAuthenticationStrategy();
-	private AuthenticationStrategy traderJoesOAuthStrategy = new OAuthAuthenticationStrategy("123456789");
-	private AuthenticationStrategy traderJoesBasicStrategy = new BasicAuthenticationStrategy("joe", "trader");
 
 	@BeforeClass
 	public static void setupClass() {
@@ -29,7 +26,7 @@ public class RESTLocationApiBeanTestUnautomated {
 
 	@Test
 	public void testGetExistingLocationWithNoCredentials() {
-		applyAuthenticationStartegy(noAuthenticationStrategy);
+		applyAuthenticationStartegy(Authorizations.noAuthenticationStrategy);
 		try {
 			client.get("123");
 			Assert.fail("Should throw unauthorized exception");
@@ -40,7 +37,7 @@ public class RESTLocationApiBeanTestUnautomated {
 
 	@Test
 	public void testGetExistingLocationWithTraderJoesOAuthAuthentication() throws APIException {
-		applyAuthenticationStartegy(traderJoesOAuthStrategy);
+		applyAuthenticationStartegy(Authorizations.traderJoesOAuthStrategy);
 		Location location = client.get("123");
 		Assert.assertNotNull(location);
 		Assert.assertEquals("123", location.getId());
@@ -48,18 +45,63 @@ public class RESTLocationApiBeanTestUnautomated {
 
 	@Test
 	public void testGetExistingLocationWithTraderJoesBasicAuthentication() throws APIException {
-		applyAuthenticationStartegy(traderJoesBasicStrategy);
+		applyAuthenticationStartegy(Authorizations.traderJoesBasicStrategy);
 		Location location = client.get("123");
 		Assert.assertNotNull(location);
 		Assert.assertEquals("123", location.getId());
 	}
+	
+	@Test
+	public void testGetExistingLocationWithWrongBasicAuthentication() throws APIException {
+		applyAuthenticationStartegy(new BasicAuthenticationStrategy("somedude", "somepassw"));
+		try {
+			client.get("123");
+			Assert.fail("Should throw not authorized exception");
+		} catch (APIException e){
+			Assert.assertEquals(e.getHttpStatusCode(), Status.UNAUTHORIZED.getStatusCode());
+		}
+		
+	}
 
 	@Test
 	public void testGetNonExistingLocationWithTraderJoesOAuthAuthentication() throws APIException {
-		applyAuthenticationStartegy(traderJoesOAuthStrategy);
-		Location location = client.get("zzzzzzzz");
-		Assert.assertNull(location);
+		applyAuthenticationStartegy(Authorizations.traderJoesOAuthStrategy);
+		try {
+			client.get("zzzzzzzz");
+			Assert.fail("Should throw not found exception");
+		} catch (APIException e) {
+			Assert.assertEquals(e.getHttpStatusCode(), Status.NOT_FOUND.getStatusCode());
+		}
 	}
+	
+	@Test
+	public void testGetExistingLocationNotOwnedByTraderJoesWithTraderJoesOAuthAuthentication() throws APIException {
+		applyAuthenticationStartegy(Authorizations.traderJoesOAuthStrategy);
+		try {
+			client.get("321");
+			Assert.fail("Should throw not found exception");
+		} catch (APIException e) {
+			Assert.assertEquals(e.getHttpStatusCode(), Status.FORBIDDEN.getStatusCode());
+		}
+	}
+	
+	@Test
+	public void testUpdateExistingLocationWithTraderJoesCredentials() throws APIException{
+		applyAuthenticationStartegy(Authorizations.traderJoesOAuthStrategy);
+		Location location = client.get("123");
+		String updatedName = location.getName() + "x";
+		location.setName(updatedName);
+		Location updatedLocation = client.update(location.getId(), location);
+		
+		Assert.assertEquals(updatedName, updatedLocation.getName());
+	}
+	
+	@Test
+	public void testGenerateApiTraffic(){
+		TrafficGenerator generator = new TrafficGenerator(client);
+		generator.generate(10000, 50);
+	}
+	
 
 	private void applyAuthenticationStartegy(AuthenticationStrategy authStrategy) {
 		client.setAuthStrategy(authStrategy);
