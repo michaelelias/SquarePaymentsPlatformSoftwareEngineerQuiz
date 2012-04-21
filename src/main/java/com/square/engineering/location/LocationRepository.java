@@ -1,6 +1,7 @@
 package com.square.engineering.location;
 
-import java.io.InputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,9 +34,8 @@ public class LocationRepository {
 	
 	private void loadLocations(){
 		try {
-			InputStream is = LocationRepository.class.getResourceAsStream(FILE);
 			Properties properties = new Properties();
-			properties.load(is);
+			properties.load(LocationRepository.class.getResourceAsStream(FILE));
 			
 			String[] locations = properties.getProperty("locations").split(",");
 			for(String location : locations){

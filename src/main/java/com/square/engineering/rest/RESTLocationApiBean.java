@@ -43,6 +43,9 @@ public class RESTLocationApiBean {
 	@Path("/{locationId}")
 	public Location updateLocation(@PathParam("locationId") String locationId, Location locationUpdate) throws APIException {
 		checkAuthentication();
+		if(locationUpdate == null){
+			throw new APIException(400, "location update info must be provided.");
+		}
 		LOG.info("Update location [id=" + locationId + ", " + locationUpdate.toString() + "]");
 		try {
 			return locationRepo.update(locationId, locationUpdate, getAuthorizedMerchantId());

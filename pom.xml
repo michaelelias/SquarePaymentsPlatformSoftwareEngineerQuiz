@@ -109,10 +109,20 @@
 					</systemProperties>
 					<contextPath>/</contextPath>
 					<connectors>
-						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+						<!-- <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
 							<host>0.0.0.0</host>
 							<port>8880</port>
 							<maxIdleTime>30000</maxIdleTime>
+						</connector> -->
+						<connector implementation="org.mortbay.jetty.security.SslSocketConnector">
+							<host>0.0.0.0</host>
+							<port>443</port>
+							<maxIdleTime>30000</maxIdleTime>
+							<keystore>keystore.jks</keystore>
+							<password>password</password>
+							<keyPassword>password</keyPassword>
+							<!-- <truststore>keystore</truststore>
+							<trustPassword>password</trustPassword> -->
 						</connector>
 					</connectors>
 					<!-- <scanIntervalSeconds>8</scanIntervalSeconds> -->

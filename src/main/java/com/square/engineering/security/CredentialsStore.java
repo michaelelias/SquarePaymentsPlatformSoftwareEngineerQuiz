@@ -1,6 +1,5 @@
 package com.square.engineering.security;
 
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -22,9 +21,8 @@ public class CredentialsStore {
 	
 	private void loadCredentials() {
 		try {
-			InputStream is = CredentialsStore.class.getResourceAsStream(FILE);
 			Properties properties = new Properties();
-			properties.load(is);
+			properties.load(CredentialsStore.class.getResourceAsStream(FILE));
 			
 			String[] merchantIds = properties.getProperty("merchants").split(",");
 			for(String merchantId : merchantIds){

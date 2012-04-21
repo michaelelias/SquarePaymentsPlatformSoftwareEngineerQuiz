@@ -1,0 +1,26 @@
+# Collections of curl commands that call the api. 
+# The --insecure flag is used because the used certificate is not signed by a known CA by curl
+
+# Get location using Basic Authentication with traderjoes' credentials
+curl --insecure --get --basic --user joe:trader https://localhost/rest/locations/123
+
+# Get location using Basic Authentication with moonbucks' credentials
+curl --insecure --get --basic --user moon:bucks https://localhost/rest/locations/321
+
+# Get location using OAuth Authorization with traderjoes' credentials
+curl --insecure --get http://localhost:8880/rest/locations/123?token=123456789
+
+# Get location using OAuth Authorization with moonbucks' credentials
+curl --insecure --get http://localhost:8880/rest/locations/123?token=987654321
+
+# Get location with no authorization
+curl --insecure --get http://localhost:8880/rest/locations/123
+
+# Get unknown location
+curl --insecure --get --basic --user joe:trader https://localhost/rest/locations/32w212sw
+
+# Get location not owned by authenticated merchant
+curl --insecure --get --basic --user joe:trader https://localhost/rest/locations/321
+
+# Update location
+curl --insecure -H "Accept: application/json" -X PUT --data "{\"name\":\"some new name\"}" --basic --user joe:trader https://localhost/rest/locations/123

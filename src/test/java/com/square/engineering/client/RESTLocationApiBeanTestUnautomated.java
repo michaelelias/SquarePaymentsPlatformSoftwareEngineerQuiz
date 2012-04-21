@@ -14,7 +14,8 @@ import com.square.engineering.rest.APIException;
 
 public class RESTLocationApiBeanTestUnautomated {
 
-	private static final String SERVER_URL = "http://localhost:8880";
+	//private static final String SERVER_URL = "http://localhost:8880";
+	private static final String SERVER_URL = "https://localhost";
 
 	private static RESTLocationApiClient client;
 
@@ -26,7 +27,7 @@ public class RESTLocationApiBeanTestUnautomated {
 
 	@Test
 	public void testGetExistingLocationWithNoCredentials() {
-		applyAuthenticationStartegy(Authorizations.noAuthenticationStrategy);
+		applyAuthenticationStrategy(Authorizations.noAuthenticationStrategy);
 		try {
 			client.get("123");
 			Assert.fail("Should throw unauthorized exception");
@@ -37,7 +38,7 @@ public class RESTLocationApiBeanTestUnautomated {
 
 	@Test
 	public void testGetExistingLocationWithTraderJoesOAuthAuthentication() throws APIException {
-		applyAuthenticationStartegy(Authorizations.traderJoesOAuthStrategy);
+		applyAuthenticationStrategy(Authorizations.traderJoesOAuthStrategy);
 		Location location = client.get("123");
 		Assert.assertNotNull(location);
 		Assert.assertEquals("123", location.getId());
@@ -45,27 +46,27 @@ public class RESTLocationApiBeanTestUnautomated {
 
 	@Test
 	public void testGetExistingLocationWithTraderJoesBasicAuthentication() throws APIException {
-		applyAuthenticationStartegy(Authorizations.traderJoesBasicStrategy);
+		applyAuthenticationStrategy(Authorizations.traderJoesBasicStrategy);
 		Location location = client.get("123");
 		Assert.assertNotNull(location);
 		Assert.assertEquals("123", location.getId());
 	}
-	
+
 	@Test
 	public void testGetExistingLocationWithWrongBasicAuthentication() throws APIException {
-		applyAuthenticationStartegy(new BasicAuthenticationStrategy("somedude", "somepassw"));
+		applyAuthenticationStrategy(new BasicAuthenticationStrategy("somedude", "somepassw"));
 		try {
 			client.get("123");
 			Assert.fail("Should throw not authorized exception");
-		} catch (APIException e){
+		} catch (APIException e) {
 			Assert.assertEquals(e.getHttpStatusCode(), Status.UNAUTHORIZED.getStatusCode());
 		}
-		
+
 	}
 
 	@Test
 	public void testGetNonExistingLocationWithTraderJoesOAuthAuthentication() throws APIException {
-		applyAuthenticationStartegy(Authorizations.traderJoesOAuthStrategy);
+		applyAuthenticationStrategy(Authorizations.traderJoesOAuthStrategy);
 		try {
 			client.get("zzzzzzzz");
 			Assert.fail("Should throw not found exception");
@@ -73,10 +74,10 @@ public class RESTLocationApiBeanTestUnautomated {
 			Assert.assertEquals(e.getHttpStatusCode(), Status.NOT_FOUND.getStatusCode());
 		}
 	}
-	
+
 	@Test
 	public void testGetExistingLocationNotOwnedByTraderJoesWithTraderJoesOAuthAuthentication() throws APIException {
-		applyAuthenticationStartegy(Authorizations.traderJoesOAuthStrategy);
+		applyAuthenticationStrategy(Authorizations.traderJoesOAuthStrategy);
 		try {
 			client.get("321");
 			Assert.fail("Should throw not found exception");
@@ -84,26 +85,74 @@ public class RESTLocationApiBeanTestUnautomated {
 			Assert.assertEquals(e.getHttpStatusCode(), Status.FORBIDDEN.getStatusCode());
 		}
 	}
-	
+
 	@Test
-	public void testUpdateExistingLocationWithTraderJoesCredentials() throws APIException{
-		applyAuthenticationStartegy(Authorizations.traderJoesOAuthStrategy);
+	public void testUpdateExistingLocationWithTraderJoesCredentials() throws APIException {
+		applyAuthenticationStrategy(Authorizations.traderJoesOAuthStrategy);
 		Location location = client.get("123");
 		String updatedName = location.getName() + "x";
 		location.setName(updatedName);
 		Location updatedLocation = client.update(location.getId(), location);
-		
+
 		Assert.assertEquals(updatedName, updatedLocation.getName());
+	}
+
+	@Test
+	public void testUpdateExistingLocationWithTraderJoesCredentialsWithNoRequestBody() {
+		applyAuthenticationStrategy(Authorizations.traderJoesOAuthStrategy);
+		try {
+			client.update("123", null);
+			Assert.fail("Expected BadRequest exception to be thrown");
+		} catch (APIException e) {
+			Assert.assertEquals(Status.BAD_REQUEST.getStatusCode(), e.getHttpStatusCode());
+		}
+	}
+
+	@Test
+	public void testUpdateExistingLocationWithNoCredentials() throws APIException {
+		applyAuthenticationStrategy(Authorizations.traderJoesBasicStrategy);
+		Location location = client.get("123");
+		String updatedName = location.getName() + "x";
+		location.setName(updatedName);
+		applyAuthenticationStrategy(Authorizations.noAuthenticationStrategy);
+		try {
+			client.update("123", location);
+			Assert.fail("Expected UnAuthorized exception to be thrown");
+		} catch (APIException e) {
+			Assert.assertEquals(Status.UNAUTHORIZED.getStatusCode(), e.getHttpStatusCode());
+		}
+	}
+
+	@Test
+	public void testDeleteLocationWithNoCredentials() throws APIException {
+		applyAuthenticationStrategy(Authorizations.noAuthenticationStrategy);
+		try {
+			client.delete("123");
+			Assert.fail("Expected UnAuthorized exception to be thrown");
+		} catch (APIException e) {
+			Assert.assertEquals(Status.UNAUTHORIZED.getStatusCode(), e.getHttpStatusCode());
+		}
 	}
 	
 	@Test
-	public void testGenerateApiTraffic(){
+	@Ignore
+	public void testDeleteLocationWithTraderJoesBasicAuthentication() throws APIException {
+		applyAuthenticationStrategy(Authorizations.traderJoesBasicStrategy);
+		client.delete("123");
+		try {
+			client.get("123");
+		} catch(APIException e){
+			Assert.assertEquals(Status.NOT_FOUND.getStatusCode(), e.getHttpStatusCode());
+		}
+	}
+
+	@Test
+	public void testGenerateApiTraffic() {
 		TrafficGenerator generator = new TrafficGenerator(client);
 		generator.generate(10000, 50);
 	}
-	
 
-	private void applyAuthenticationStartegy(AuthenticationStrategy authStrategy) {
+	private void applyAuthenticationStrategy(AuthenticationStrategy authStrategy) {
 		client.setAuthStrategy(authStrategy);
 	}
 
