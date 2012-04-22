@@ -1,7 +1,5 @@
 package com.square.engineering.location;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

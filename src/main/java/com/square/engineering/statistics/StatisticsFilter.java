@@ -74,10 +74,12 @@ public class StatisticsFilter implements Filter {
 			statusCodeClassValues = statusCodes.get("5xx");
 		}
 
-		if (statusCodeClassValues.size() > AVERAGE_MAX_SAMPLE_SIZE) {
-			statusCodeClassValues.remove(0);
+		if(statusCodeClassValues != null){
+			if (statusCodeClassValues.size() > AVERAGE_MAX_SAMPLE_SIZE) {
+				statusCodeClassValues.remove(0);
+			}
+			statusCodeClassValues.add(statusCode);
 		}
-		statusCodeClassValues.add(statusCode);
 	}
 
 	private void logStats() {

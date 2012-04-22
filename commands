@@ -23,4 +23,7 @@ curl --insecure --get --basic --user joe:trader https://localhost/rest/locations
 curl --insecure --get --basic --user joe:trader https://localhost/rest/locations/321
 
 # Update location
-curl --insecure -H "Accept: application/json" -X PUT --data "{\"name\":\"some new name\"}" --basic --user joe:trader https://localhost/rest/locations/123
+curl -i --insecure -H "Content-Type: application/json" -X PUT --data "{\"name\":\"some new name\"}" --basic --user joe:trader https://localhost/rest/locations/123
+
+# Delete location
+curl -i --insecure -X DELETE --basic --user joe:trader https://localhost/rest/locations/123

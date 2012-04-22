@@ -54,24 +54,6 @@
 			<version>${jersey.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
-			<version>${jetty.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-util</artifactId>
-			<version>${jetty.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-management</artifactId>
-			<version>${jetty.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
 			<version>${junit.version}</version>
@@ -109,20 +91,13 @@
 					</systemProperties>
 					<contextPath>/</contextPath>
 					<connectors>
-						<!-- <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-							<host>0.0.0.0</host>
-							<port>8880</port>
-							<maxIdleTime>30000</maxIdleTime>
-						</connector> -->
 						<connector implementation="org.mortbay.jetty.security.SslSocketConnector">
 							<host>0.0.0.0</host>
 							<port>443</port>
 							<maxIdleTime>30000</maxIdleTime>
-							<keystore>keystore.jks</keystore>
+							<keystore>src/main/resources/keystore.jks</keystore>
 							<password>password</password>
 							<keyPassword>password</keyPassword>
-							<!-- <truststore>keystore</truststore>
-							<trustPassword>password</trustPassword> -->
 						</connector>
 					</connectors>
 					<!-- <scanIntervalSeconds>8</scanIntervalSeconds> -->
