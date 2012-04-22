@@ -5,3 +5,9 @@ Given the REST API defined below, write a Rack middleware, Java servlet, or equi
   - DELETE /locations/:location_id
  
 Assume the service is only available over HTTPS and that the API returns standard HTTP status codes, i.e., 5xx for internal server errors, 4xx for client request errors, 2xx for success, and 3xx for redirection. Bonus points: implementing the API in question, and adding authentication to the API.
+
+--------------------------------------------------
+
+The solution : A Java Web application that implements the location REST API over HTTPS and is protected by basic authentication or OAuth
+
+Usage : start the app using the maven command : mvn jetty:run . Sample commands can be found in the commands file
