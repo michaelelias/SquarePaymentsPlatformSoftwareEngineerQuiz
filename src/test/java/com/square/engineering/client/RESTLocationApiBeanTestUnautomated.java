@@ -1,9 +1,19 @@
 package com.square.engineering.client;
 
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.Response.Status;
 
 import junit.framework.Assert;
 
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -14,7 +24,7 @@ import com.square.engineering.rest.APIException;
 
 public class RESTLocationApiBeanTestUnautomated {
 
-	//private static final String SERVER_URL = "http://localhost:8880";
+	// private static final String SERVER_URL = "http://localhost:8880";
 	private static final String SERVER_URL = "https://localhost";
 
 	private static RESTLocationApiClient client;
@@ -22,6 +32,32 @@ public class RESTLocationApiBeanTestUnautomated {
 	@BeforeClass
 	public static void setupClass() {
 		DefaultHttpClient httpClient = new DefaultHttpClient();
+		if (SERVER_URL.startsWith("https")) {
+			// Fix when using https; used certificate is not valid
+			try {
+				SSLContext ctx = SSLContext.getInstance("TLS");
+				X509TrustManager tm = new X509TrustManager() {
+					public void checkClientTrusted(X509Certificate[] xcs, String string) throws CertificateException {
+						
+					}
+					public void checkServerTrusted(X509Certificate[] xcs, String string) throws CertificateException {
+						
+					}
+					public X509Certificate[] getAcceptedIssuers() {
+						return null;
+					}
+				};
+				ctx.init(null, new TrustManager[]{tm}, null);
+				SSLSocketFactory ssf = new SSLSocketFactory(ctx);
+				ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+				ClientConnectionManager ccm = httpClient.getConnectionManager();
+				SchemeRegistry sr = ccm.getSchemeRegistry();
+				sr.register(new Scheme("https", ssf, 443));
+				httpClient = new DefaultHttpClient(ccm, httpClient.getParams());
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		} 
 		client = new RESTLocationApiClient(httpClient, SERVER_URL);
 	}
 
@@ -133,7 +169,7 @@ public class RESTLocationApiBeanTestUnautomated {
 			Assert.assertEquals(Status.UNAUTHORIZED.getStatusCode(), e.getHttpStatusCode());
 		}
 	}
-	
+
 	@Test
 	@Ignore
 	public void testDeleteLocationWithTraderJoesBasicAuthentication() throws APIException {
@@ -141,7 +177,7 @@ public class RESTLocationApiBeanTestUnautomated {
 		client.delete("123");
 		try {
 			client.get("123");
-		} catch(APIException e){
+		} catch (APIException e) {
 			Assert.assertEquals(Status.NOT_FOUND.getStatusCode(), e.getHttpStatusCode());
 		}
 	}
